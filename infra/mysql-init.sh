@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+mysql --protocol=socket -uroot -p"${MYSQL_ROOT_PASSWORD}" << EOSQL
+CREATE USER IF NOT EXISTS '${VAULT_DB_USERNAME}'@'%' IDENTIFIED BY '${VAULT_DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON auth_db.* TO '${VAULT_DB_USERNAME}'@'%';
+GRANT ALL PRIVILEGES ON vault_db.* TO '${VAULT_DB_USERNAME}'@'%';
+EOSQL
