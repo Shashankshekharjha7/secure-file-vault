@@ -37,6 +37,7 @@ jobs:
           - 27018:27017
 
     env:
+      MYSQL_ROOT_PASSWORD: ci-mysql-password
       VAULT_DB_USERNAME: root
       VAULT_DB_PASSWORD: ci-mysql-password
       MONGO_INITDB_ROOT_USERNAME: root
