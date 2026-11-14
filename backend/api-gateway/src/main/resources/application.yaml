@@ -1,3 +1,4 @@
+
 server:
   port: 8080
 
@@ -7,17 +8,16 @@ spring:
   cloud:
     gateway:
       server:
-        web flux:
+        webflux:
           routes:
             - id: auth-service-route
               uri: lb://AUTH-SERVICE
               predicates:
-                -path=/api/auth/**
-
+                - Path=/api/auth/**
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
