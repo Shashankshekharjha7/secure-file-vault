@@ -1,3 +1,4 @@
+
 name: Secure File Vault CI
 
 on:
@@ -11,6 +12,35 @@ jobs:
   build:
     name: Build ${{ matrix.service }}
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-mysql-password
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: auth_db
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+      mongo:
+        image: mongo:8.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: ci-mongo-password
+        ports:
+          - 27018:27017
+
+    env:
+      VAULT_DB_USERNAME: root
+      VAULT_DB_PASSWORD: ci-mysql-password
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ci-mongo-password
 
     strategy:
       fail-fast: false
@@ -31,6 +61,12 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+
+      - name: Create vault database
+        run: |
+          docker exec "${{ job.services.mysql.id }}" \
+            mysql -uroot -p"$MYSQL_ROOT_PASSWORD" \
+            -e "CREATE DATABASE IF NOT EXISTS vault_db;"
 
       - name: Build and test service
         run: mvn -B -f backend/${{ matrix.service }}/pom.xml verify
