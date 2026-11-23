@@ -20,6 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Checks whether a database integrity violation was caused by the email unique constraint.
     private boolean isEmailUniqueConstraintViolation(
             DataIntegrityViolationException exception) {
         Throwable cause = exception;
