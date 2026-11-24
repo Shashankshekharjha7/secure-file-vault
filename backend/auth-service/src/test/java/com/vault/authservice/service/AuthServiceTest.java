@@ -56,7 +56,7 @@ public class AuthServiceTest {
                 "hashedPassword"
         );
 
-        when(userRepository.save(any(User.class)))
+        when(userRepository.saveAndFlush(any(User.class)))
                 .thenReturn(savedUser);
 
         //Act
