@@ -69,11 +69,9 @@ public class AuthServiceTest {
 
         verify(userRepository).findByEmail("shashank@gmail.com");
         verify(passwordEncoder).encode("password123");
-        verify(userRepository).save(any(User.class));
-
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
 
-        verify(userRepository).save(userCaptor.capture());
+        verify(userRepository).saveAndFlush(userCaptor.capture());
 
         User capturedUser = userCaptor.getValue();
 
